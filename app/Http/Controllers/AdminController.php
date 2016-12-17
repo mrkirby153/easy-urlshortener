@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 class AdminController extends Controller {
 
     public function __construct() {
-        return $this->middleware('auth');
+        return $this->middleware(['auth', 'can:view-admin']);
     }
 
     public function index() {

@@ -59,9 +59,9 @@
 
                             <ul class="dropdown-menu" role="menu">
                                 <li>
-                                    @if(Auth::user()->admin)
+                                    @can('view-admin')
                                         <a href="{{url('/admin')}}"><i class="fa fa-cogs" aria-hidden="true"></i>Admin</a>
-                                    @endif
+                                    @endcan
                                     <a href="{{ url('/logout') }}"
                                             onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">
