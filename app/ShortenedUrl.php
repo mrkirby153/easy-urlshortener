@@ -13,4 +13,9 @@ class ShortenedUrl extends Model
 
     public $timestamps = false;
 
+
+    public function clicks(){
+        return $this->hasMany('\App\Click', 'url', 'id');
+    }
+
 }

@@ -19,3 +19,4 @@ Auth::routes();
 
 Route::get('/home', 'UrlController@index');
 Route::post('/url/create', 'UrlController@create');
+Route::get('/url/get', 'UrlController@all');

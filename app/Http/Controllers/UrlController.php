@@ -43,6 +43,19 @@ class UrlController extends Controller
         return response()->json(['success'=>$shortenedUrl->id]);
     }
 
+    public function all(Request $request){
+        if(\Auth::guest())
+            return response()->json([]);
+        $raw_urls = ShortenedUrl::whereOwner(\Auth::id())->orderBy('created_at', 'desc')->get();
+        $urls = array();
+        foreach($raw_urls as $u){
+            $u->short_url = $request->root().'/'.$u->id;
+            $u->clicks = $u->clicks()->count();
+            $urls[] = $u;
+        }
+        return $urls;
+    }
+
     private function generateId(){
         $chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
         $url = "";
