@@ -15,6 +15,7 @@ class CreateClicksTable extends Migration
     {
         Schema::create('clicks', function (Blueprint $table) {
             $table->string('id')->primary();
+            $table->timestamp('created_at');
             $table->string('user_agent');
             $table->string('url');
         });
