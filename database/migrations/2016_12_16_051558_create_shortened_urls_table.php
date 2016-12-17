@@ -15,6 +15,7 @@ class CreateShortenedUrlsTable extends Migration
     {
         Schema::create('shortened_urls', function (Blueprint $table) {
             $table->string('id')->primary();
+            $table->timestamp('created_at');
             $table->integer('owner');
             $table->string('long_url');
         });
