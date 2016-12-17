@@ -14,8 +14,7 @@ class CreateClicksTable extends Migration
     public function up()
     {
         Schema::create('clicks', function (Blueprint $table) {
-            $table->increments('id');
-            $table->timestamps();
+            $table->string('id')->primary();
             $table->string('user_agent');
             $table->string('url');
         });

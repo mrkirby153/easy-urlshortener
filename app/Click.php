@@ -8,4 +8,8 @@ class Click extends Model
 {
 
     protected $table = "clicks";
+
+    public $incrementing = false;
+
+    public $timestamps = false;
 }
