@@ -9,6 +9,7 @@ Vue.component('url-shortener', {
                 }), {})
             },
             loading: false,
+            shortened: ''
         };
     },
 
@@ -38,6 +39,7 @@ Vue.component('url-shortener', {
             toastr["success"]("URL copied to clipboard", "Success!")
         },
         shortenUrl(){
+            this.shortened = '';
             Shortener.post('/url/create', this.forms.create).then(response => {
                 toastr.options = {
                     "closeButton": false,
@@ -57,13 +59,15 @@ Vue.component('url-shortener', {
                     "hideMethod": "fadeOut"
                 };
                 toastr["success"]("Your URL has been shortened", "URL Generated");
-                this.refreshUrls();
+                if(Shortener.user != 'null')
+                    this.refreshUrls();
+                this.shortened = response.data.success;
             });
         },
         refreshUrls(){
-            this.urls = [];
             this.loading = true;
             this.$http.get('/url/get').then(response => {
+                this.urls = [];
                 this.loading = false;
                 this.urls = response.data;
             });
@@ -76,7 +80,7 @@ Vue.component('url-shortener', {
                 "newestOnTop": false,
                 "progressBar": true,
                 "positionClass": "toast-top-right",
-                "preventDuplicates": false,
+                "preventDuplicates": true,
                 "onclick": null,
                 "showDuration": "300",
                 "hideDuration": "1000",

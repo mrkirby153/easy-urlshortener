@@ -32,7 +32,7 @@ class UrlController extends Controller {
         if ($custom != '') {
             $shortenedUrl->id = $custom;
         } else {
-            $id = $this->generateId(5);
+            $id = $this->generateId(5, $shortenedUrl);
             if ($id == "E:MAX_TRIES_EXCEEDED") {
                 return response()->json(['url' => 'Could not generate a shortened URL. If this issue persists, we have run out of IDs'], 422);
             }
@@ -41,7 +41,7 @@ class UrlController extends Controller {
         $shortenedUrl->long_url = $url;
         $shortenedUrl->owner = (\Auth::guest()) ? -1 : \Auth::id();
         $shortenedUrl->save();
-        return response()->json(['success' => $shortenedUrl->id]);
+        return response()->json(['success' => $request->root() . '/' . $shortenedUrl->id]);
     }
 
     public function all(Request $request) {
@@ -80,14 +80,14 @@ class UrlController extends Controller {
     public function click($id) {
         $url = ShortenedUrl::findOrFail($id);
         $click = new Click();
-        $click->id = $this->generateId(30);
+        $click->id = $this->generateId(30, $click);
         $click->url = $url->id;
         $click->user_agent = request()->server('HTTP_USER_AGENT');
         $click->save();
         return response()->redirectTo($url->long_url);
     }
 
-    private function generateId($size) {
+    private function generateId($size, $model) {
         $chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
         $url = "";
         $tries = 0;
@@ -96,7 +96,7 @@ class UrlController extends Controller {
                 $url .= $chars[rand(0, strlen($chars) - 1)];
             }
             $tries += 1;
-        } while (ShortenedUrl::whereId($url)->first() != null && $tries < 1000);
+        } while ($model->whereId($url)->first() != null && $tries < 1000);
         if ($tries >= 1000) {
             return "E:MAX_TRIES_EXCEEDED";
         }

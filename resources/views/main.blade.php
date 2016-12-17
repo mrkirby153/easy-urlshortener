@@ -17,38 +17,53 @@
                     </span>
                 </button>
             </form>
-            <div v-if="urls.length > 0">
-                <h3>Your URLs</h3>
-                <button class="btn btn-sm" @click="refreshUrls"><i class="fa fa-refresh" :class="{'fa-spin': loading}" aria-hidden="true"></i></button>
-                <table class="table table-responsive">
-                    <thead>
-                    <tr>
-                        <th>URL</th>
-                        <th>Shortened URL</th>
-                        <th>Clicks</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr v-for="url in urls">
-                        <td><a :href="url.long_url" target="_blank">@{{url.long_url}}</a></td>
-                        <td>
-                            <div class="input-group">
-                                <input type="text" readonly v-model="url.short_url" class="form-control"/>
-                                <span class="input-group-btn">
+            <transition name="fade">
+                <div v-if="shortened">
+                    <h3>Shortened URL</h3>
+                    <div class="input-group">
+                        <input type="text" readonly v-model="shortened" class="form-control"/>
+                        <span class="input-group-btn">
+                                    <button class="btn btn-default" :data-clipboard-text="shortened" v-clipboard @click="copyAlert"><i class="fa fa-clone" aria-hidden="true"></i></button>
+                                </span>
+                    </div>
+                </div>
+            </transition>
+                @if(!Auth::guest())
+                    <div v-if="urls.length > 0">
+                        <h3>Your URLs</h3>
+                        <button class="btn btn-sm" @click="refreshUrls"><i class="fa fa-refresh" :class="{'fa-spin': loading}" aria-hidden="true"></i></button>
+                        <table class="table table-responsive">
+                            <thead>
+                            <tr>
+                                <th>URL</th>
+                                <th>Shortened URL</th>
+                                <th>Clicks</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <transition name="fade">
+                                <tr v-for="url in urls">
+                                    <td><a :href="url.long_url" target="_blank">@{{url.long_url}}</a></td>
+                                    <td>
+                                        <div class="input-group">
+                                            <input type="text" readonly v-model="url.short_url" class="form-control"/>
+                                            <span class="input-group-btn">
                                     <button class="btn btn-default" :data-clipboard-text="url.short_url" v-clipboard @click="copyAlert"><i class="fa fa-clone" aria-hidden="true"></i></button>
                                 </span>
-                            </div>
-                        </td>
-                        <td>@{{url.click_count}}</td>
-                        <td>
-                            <div class="btn-group">
-                                <button class="btn btn-danger" @click="deleteUrl(url.id)">Delete</button>
-                            </div>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
+                                        </div>
+                                    </td>
+                                    <td>@{{url.click_count}}</td>
+                                    <td>
+                                        <div class="btn-group">
+                                            <button class="btn btn-danger" @click="deleteUrl(url.id)">Delete</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </transition>
+                            </tbody>
+                        </table>
+                        @endif
+                    </div>
             </div>
-        </div>
     </url-shortener>
 @endsection
