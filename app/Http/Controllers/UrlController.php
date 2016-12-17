@@ -78,7 +78,10 @@ class UrlController extends Controller {
     }
 
     public function click($id) {
-        $url = ShortenedUrl::findOrFail($id);
+        $url = ShortenedUrl::whereId($id)->first();
+        if($url == null){
+            return response(view('notfound'), 404);
+        }
         $click = new Click();
         $click->id = $this->generateId(config('shortener.click_id_size'), $click);
         $click->url = $url->id;
