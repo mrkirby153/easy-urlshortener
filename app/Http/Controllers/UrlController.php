@@ -56,6 +56,21 @@ class UrlController extends Controller
         return $urls;
     }
 
+    public function delete(Request $request){
+        $url = ShortenedUrl::whereId($request->url)->first();
+        if($url == null){
+            return response()->json(['error'=>'That URL does not exist'], 422);
+        }
+        if($url->owner != \Auth::id()){
+            return response()->json(['error'=>'You do not have permission to delete this URL'], 422);
+        }
+        foreach($url->clicks as $click){
+            $click->delete();
+        }
+        $url->delete();
+        return response()->json(['success'=>'URL deleted!']);
+    }
+
     private function generateId(){
         $chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
         $url = "";

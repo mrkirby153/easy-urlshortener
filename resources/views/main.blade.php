@@ -40,6 +40,11 @@
                             </div>
                         </td>
                         <td>@{{url.clicks}}</td>
+                        <td>
+                            <div class="btn-group">
+                                <button class="btn btn-danger" @click="deleteUrl(url.id)">Delete</button>
+                            </div>
+                        </td>
                     </tr>
                     </tbody>
                 </table>
