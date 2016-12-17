@@ -31,7 +31,7 @@
                 @if(!Auth::guest())
                     <div v-if="urls.length > 0">
                         <h3>Your URLs</h3>
-                        <button class="btn btn-sm" @click="refreshUrls"><i class="fa fa-refresh" :class="{'fa-spin': loading}" aria-hidden="true"></i></button>
+                        <button class="btn btn-sm btn-default" @click="refreshUrls"><i class="fa fa-refresh" :class="{'fa-spin': loading}" aria-hidden="true"></i></button>
                         <table class="table table-responsive">
                             <thead>
                             <tr>
