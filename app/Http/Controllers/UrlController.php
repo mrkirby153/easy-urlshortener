@@ -98,7 +98,7 @@ class UrlController extends Controller {
     }
 
     private function generateId($size, $model) {
-        $chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+        $chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
         $url = "";
         $tries = 0;
         do {

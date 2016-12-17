@@ -21,7 +21,7 @@ class AdminController extends Controller {
         $urlCount = ShortenedUrl::count();
         return response()->json(['urls' => [
             'used' => $urlCount,
-            'avail' => pow(52, config('shortener.url_id_size'))
+            'avail' => pow(62, config('shortener.url_id_size'))
         ]]);
     }
 
