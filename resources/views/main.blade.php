@@ -18,7 +18,14 @@
                 <tbody>
                     <tr v-for="url in urls">
                         <td><a :href="url.long_url" target="_blank">@{{url.long_url}}</a></td>
-                        <td><input type="text" readonly v-model="url.short_url" class="form-control"/></td>
+                        <td>
+                            <div class="input-group">
+                                <input type="text" readonly v-model="url.short_url" class="form-control"/>
+                                <span class="input-group-btn">
+                                    <button class="btn btn-default" :data-clipboard-text="url.short_url" v-clipboard @click="copyAlert"><i class="fa fa-clone" aria-hidden="true"></i></button>
+                                </span>
+                            </div>
+                        </td>
                         <td>@{{url.clicks}}</td>
                     </tr>
                 </tbody>

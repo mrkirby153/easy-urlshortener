@@ -15,8 +15,12 @@ require('./bootstrap');
 
 Vue.component('example', require('./components/Example.vue'));
 
+Vue.directive('clipboard', require('./directives/clipboard'));
+
 require('./form/bootstrapper');
 require('./components/main');
+
+window.toastr = require('toastr');
 
 const app = new Vue({
     el: '#app'
