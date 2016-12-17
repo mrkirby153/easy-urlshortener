@@ -20,11 +20,12 @@ class UrlController extends Controller
 
         $this->validate($request, [
             'url'=>'required|URL',
-            'custom_alias'=>'unique:shortened_urls,id'
+            'custom_alias'=>'unique:shortened_urls,id|alpha_num'
         ], [
             'url.required'=>'Please specify a URL',
             'url.u_r_l'=>'Please enter a valid URL',
-            'custom_alias.unique'=>'This alias is already taken'
+            'custom_alias.unique'=>'This alias is already taken',
+            'custom_alias.alpha_num'=>'Aliases can only have the characters A-Z and 0-9'
         ]);
 
         $shortenedUrl = new ShortenedUrl();
@@ -50,7 +51,7 @@ class UrlController extends Controller
         $urls = array();
         foreach($raw_urls as $u){
             $u->short_url = $request->root().'/'.$u->id;
-            $u->clicks = $u->clicks()->count();
+            $u->click_count = $u->clicks()->count();
             $urls[] = $u;
         }
         return $urls;

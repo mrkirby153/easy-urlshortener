@@ -39,7 +39,7 @@
                                 </span>
                             </div>
                         </td>
-                        <td>@{{url.clicks}}</td>
+                        <td>@{{url.click_count}}</td>
                         <td>
                             <div class="btn-group">
                                 <button class="btn btn-danger" @click="deleteUrl(url.id)">Delete</button>
