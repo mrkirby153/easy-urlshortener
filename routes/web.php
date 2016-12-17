@@ -18,4 +18,9 @@ Auth::routes();
 Route::post('/url/create', 'UrlController@create');
 Route::get('/url/get', 'UrlController@all');
 Route::post('/url/delete', 'UrlController@delete');
+
+Route::get('/admin', 'AdminController@index');
+Route::get('/admin/status', 'AdminController@status');
+Route::get('/admin/urls', 'AdminController@urls');
+
 Route::get('{url}', 'UrlController@click');

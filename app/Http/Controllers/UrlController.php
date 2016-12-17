@@ -32,7 +32,7 @@ class UrlController extends Controller {
         if ($custom != '') {
             $shortenedUrl->id = $custom;
         } else {
-            $id = $this->generateId(5, $shortenedUrl);
+            $id = $this->generateId(config('shortener.url_id_size'), $shortenedUrl);
             if ($id == "E:MAX_TRIES_EXCEEDED") {
                 return response()->json(['url' => 'Could not generate a shortened URL. If this issue persists, we have run out of IDs'], 422);
             }
@@ -62,7 +62,7 @@ class UrlController extends Controller {
         if ($url == null) {
             return response()->json(['error' => 'That URL does not exist'], 422);
         }
-        if ($url->owner != \Auth::id()) {
+        if ($url->owner != \Auth::id() && !\Auth::user()->admin) {
             return response()->json(['error' => 'You do not have permission to delete this URL'], 422);
         }
         if ($url->clicks()->count() < 1500)
@@ -80,7 +80,7 @@ class UrlController extends Controller {
     public function click($id) {
         $url = ShortenedUrl::findOrFail($id);
         $click = new Click();
-        $click->id = $this->generateId(30, $click);
+        $click->id = $this->generateId(config('shortener.click_id_size'), $click);
         $click->url = $url->id;
         $click->user_agent = request()->server('HTTP_USER_AGENT');
         $click->save();

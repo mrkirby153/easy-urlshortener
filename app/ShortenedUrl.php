@@ -18,4 +18,11 @@ class ShortenedUrl extends Model
         return $this->hasMany('\App\Click', 'url', 'id');
     }
 
+    public function owner(){
+        if($this->owner == -1){
+            return "Anonymous";
+        }
+        return User::whereId($this->owner)->first()->name;
+    }
+
 }
