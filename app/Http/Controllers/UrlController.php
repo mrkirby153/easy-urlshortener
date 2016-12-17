@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Click;
 use App\ShortenedUrl;
 use Illuminate\Http\Request;
 
@@ -32,7 +33,7 @@ class UrlController extends Controller
         if($custom != ''){
             $shortenedUrl->id = $custom;
         } else {
-            $id = $this->generateId();
+            $id = $this->generateId(5);
             if($id == "E:MAX_TRIES_EXCEEDED"){
                 return response()->json(['url'=>'Could not generate a shortened URL. If this issue persists, we have run out of IDs'], 422);
             }
@@ -72,12 +73,22 @@ class UrlController extends Controller
         return response()->json(['success'=>'URL deleted!']);
     }
 
-    private function generateId(){
+    public function click($id){
+        $url = ShortenedUrl::findOrFail($id);
+        $click = new Click();
+        $click->id = $this->generateId(30);
+        $click->url = $url->id;
+        $click->user_agent = request()->server('HTTP_USER_AGENT');
+        $click->save();
+        return response()->redirectTo($url->long_url);
+    }
+
+    private function generateId($size){
         $chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
         $url = "";
         $tries = 0;
         do {
-            for ($i = 0; $i < 5; $i++) {
+            for ($i = 0; $i < $size; $i++) {
                 $url .= $chars[rand(0, strlen($chars) - 1)];
             }
             $tries += 1;
