@@ -184,24 +184,6 @@ Vue.component('admin-dashboard', {
             });
         },
         deleteUrl(url){
-            toastr["info"]("Deleting URL, this may take a long time, depending on the amount of clicks it has.", "Deleting URL");
-            toastr.options = {
-                "closeButton": false,
-                "debug": false,
-                "newestOnTop": false,
-                "progressBar": true,
-                "positionClass": "toast-top-right",
-                "preventDuplicates": true,
-                "onclick": null,
-                "showDuration": "300",
-                "hideDuration": "1000",
-                "timeOut": "5000",
-                "extendedTimeOut": "1000",
-                "showEasing": "swing",
-                "hideEasing": "linear",
-                "showMethod": "fadeIn",
-                "hideMethod": "fadeOut"
-            };
             this.$http.post('/url/delete', {
                 url: url
             }).then(response => {
