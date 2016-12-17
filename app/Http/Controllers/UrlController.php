@@ -78,8 +78,12 @@ class UrlController extends Controller {
     }
 
     public function click($id) {
+        $preview = ends_with($id, '+');
+        if ($preview)
+            $id = str_replace('+', '', $id);
+
         $url = ShortenedUrl::whereId($id)->first();
-        if($url == null){
+        if ($url == null) {
             return response(view('notfound'), 404);
         }
         $click = new Click();
@@ -87,7 +91,10 @@ class UrlController extends Controller {
         $click->url = $url->id;
         $click->user_agent = request()->server('HTTP_USER_AGENT');
         $click->save();
-        return response()->redirectTo($url->long_url);
+        if (!$preview)
+            return response()->redirectTo($url->long_url);
+        else
+            return view('preview', compact('url'));
     }
 
     private function generateId($size, $model) {
