@@ -17,6 +17,9 @@ require('bootstrap-sass');
  */
 
 window.Vue = require('vue');
+if(Shortener.debug == "false")
+    Vue.config.devtools = false;
+
 require('vue-resource');
 
 /**
