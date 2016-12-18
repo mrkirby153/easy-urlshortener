@@ -8,6 +8,17 @@ use Illuminate\Http\Request;
 
 class UrlController extends Controller {
 
+    // A list of reserved URLs that can't be used without breaking things
+    // All of these are the names of routes used by this application
+    private $reserved = [
+        "admin",
+        "login",
+        "logout",
+        "password",
+        "register",
+        "url"
+    ];
+
 
     public function index() {
         return view('main');
@@ -31,6 +42,9 @@ class UrlController extends Controller {
 
         $shortenedUrl = new ShortenedUrl();
         if ($custom != '') {
+            if(in_array($custom, $this->reserved)){
+                return response()->json(['custom_alias'=>'This alias is already taken'], 422);
+            }
             $shortenedUrl->id = $custom;
         } else {
             $id = $this->generateId(config('shortener.url_id_size'), $shortenedUrl);
@@ -38,6 +52,9 @@ class UrlController extends Controller {
                 return response()->json(['url' => 'Could not generate a shortened URL. If this issue persists, we have run out of IDs'], 422);
             }
             $shortenedUrl->id = $id;
+        }
+        if(in_array($shortenedUrl->id, $this->reserved)){
+            return response()->json(['url'=>'An unknown error occurred when generating a shortened URL. Please try again'], 422);
         }
         $shortenedUrl->long_url = $url;
         $shortenedUrl->owner = (\Auth::guest()) ? -1 : \Auth::id();
