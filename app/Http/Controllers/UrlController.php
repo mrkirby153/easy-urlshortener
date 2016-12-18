@@ -20,12 +20,13 @@ class UrlController extends Controller {
 
         $this->validate($request, [
             'url' => 'required|URL',
-            'custom_alias' => 'unique:shortened_urls,id|alpha_num'
+            'custom_alias' => 'unique:shortened_urls,id|alpha_num|max:15'
         ], [
             'url.required' => 'Please specify a URL',
             'url.u_r_l' => 'Please enter a valid URL',
             'custom_alias.unique' => 'This alias is already taken',
-            'custom_alias.alpha_num' => 'Aliases can only have the characters A-Z and 0-9'
+            'custom_alias.alpha_num' => 'Aliases can only have the characters A-Z and 0-9',
+            'custom_alias.max' => 'Aliases can only be 15 characters maximum'
         ]);
 
         $shortenedUrl = new ShortenedUrl();
