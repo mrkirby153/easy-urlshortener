@@ -41,27 +41,13 @@ Vue.component('url-shortener', {
         shortenUrl(){
             this.shortened = '';
             Shortener.post('/url/create', this.forms.create).then(response => {
-                toastr.options = {
-                    "closeButton": false,
-                    "debug": false,
-                    "newestOnTop": false,
-                    "progressBar": true,
-                    "positionClass": "toast-top-right",
-                    "preventDuplicates": false,
-                    "onclick": null,
-                    "showDuration": "300",
-                    "hideDuration": "1000",
-                    "timeOut": "10000",
-                    "extendedTimeOut": "1000",
-                    "showEasing": "swing",
-                    "hideEasing": "linear",
-                    "showMethod": "fadeIn",
-                    "hideMethod": "fadeOut"
-                };
-                toastr["success"]("Your URL has been shortened", "URL Generated");
+                swal({
+                    title: 'URL Shortened',
+                    type: 'success',
+                    html: 'Your shortened url is: <br><br><pre>' + response.data.success + '</pre>',
+                });
                 if (Shortener.user != 'null')
                     this.refreshUrls();
-                this.shortened = response.data.success;
             });
         },
         refreshUrls(){
@@ -73,69 +59,35 @@ Vue.component('url-shortener', {
             });
         },
         deleteUrl(url){
-            toastr["info"]("Deleting URL, this may take a long time, depending on the amount of clicks it has.", "Deleting URL");
-            toastr.options = {
-                "closeButton": false,
-                "debug": false,
-                "newestOnTop": false,
-                "progressBar": true,
-                "positionClass": "toast-top-right",
-                "preventDuplicates": true,
-                "onclick": null,
-                "showDuration": "300",
-                "hideDuration": "1000",
-                "timeOut": "10000",
-                "extendedTimeOut": "1000",
-                "showEasing": "swing",
-                "hideEasing": "linear",
-                "showMethod": "fadeIn",
-                "hideMethod": "fadeOut"
-            };
-            this.loading = true;
-            this.$http.post('/url/delete', {
-                url: url
-            }).then(response => {
-                this.loading = false;
-                toastr.options = {
-                    "closeButton": false,
-                    "debug": false,
-                    "newestOnTop": false,
-                    "progressBar": true,
-                    "positionClass": "toast-top-right",
-                    "preventDuplicates": false,
-                    "onclick": null,
-                    "showDuration": "300",
-                    "hideDuration": "1000",
-                    "timeOut": "5000",
-                    "extendedTimeOut": "1000",
-                    "showEasing": "swing",
-                    "hideEasing": "linear",
-                    "showMethod": "fadeIn",
-                    "hideMethod": "fadeOut"
-                };
-                toastr["success"]("URL has been deleted", "Success");
-                this.refreshUrls();
-            }).catch(e => {
-                toastr.options = {
-                    "closeButton": false,
-                    "debug": false,
-                    "newestOnTop": false,
-                    "progressBar": true,
-                    "positionClass": "toast-top-right",
-                    "preventDuplicates": false,
-                    "onclick": null,
-                    "showDuration": "300",
-                    "hideDuration": "1000",
-                    "timeOut": "5000",
-                    "extendedTimeOut": "1000",
-                    "showEasing": "swing",
-                    "hideEasing": "linear",
-                    "showMethod": "fadeIn",
-                    "hideMethod": "fadeOut"
-                };
-                toastr["error"](e.data.error, "Error");
-                this.loading = false;
-            })
+            const vm = this;
+            swal({
+                title: 'Confirm Deletion',
+                type: 'warning',
+                html: "Are you sure you want to delete the url <b>" + url + "</b>?<br/><br/><b>NOTE:</b> Deleting URLs can take a long time depending on how many clicks the URL has.<br/><br/>" +
+                "Do not close this page while the deletion is in progress",
+                showCancelButton: true,
+                confirmButtonText: 'Confirm',
+                showLoaderOnConfirm: true,
+                preConfirm: function (email) {
+                    return new Promise(function (resolve, reject) {
+                        vm.$http.post('/url/delete', {url: url}).then(resp => {
+                            resolve();
+                        }).catch(e => {
+                            vm.refreshUrls();
+                            reject('ERROR: ' + e.data.error);
+                        });
+                    })
+                },
+                allowOutsideClick: false
+            }).then(function () {
+                vm.refreshUrls();
+                swal({
+                    type: 'success',
+                    title: 'URL Deleted',
+                    html: 'Your URL was deleted!',
+                    timer: 1000
+                })
+            });
         }
     }
 });
@@ -158,7 +110,7 @@ Vue.component('admin-dashboard', {
             return "width:" + (this.ids.urls.used / this.ids.urls.avail) * 100 + "%";
         },
         anonymousUrls(){
-            return this.urls.filter(function(url){
+            return this.urls.filter(function (url) {
                 return url.owner == -1;
             });
         }
@@ -166,7 +118,7 @@ Vue.component('admin-dashboard', {
 
     mounted(){
         this.refresh();
-        setInterval(function(){
+        setInterval(function () {
             this.refresh();
         }.bind(this), 5000);
     },
@@ -178,55 +130,41 @@ Vue.component('admin-dashboard', {
             });
         },
         loadUrls(){
-            this.$http.get('/admin/urls').then(resp=>{
+            this.$http.get('/admin/urls').then(resp => {
                 this.urls = [];
                 this.urls = resp.data;
             });
         },
         deleteUrl(url){
-            this.$http.post('/url/delete', {
-                url: url
-            }).then(response => {
-                toastr.options = {
-                    "closeButton": false,
-                    "debug": false,
-                    "newestOnTop": false,
-                    "progressBar": true,
-                    "positionClass": "toast-top-right",
-                    "preventDuplicates": false,
-                    "onclick": null,
-                    "showDuration": "300",
-                    "hideDuration": "1000",
-                    "timeOut": "5000",
-                    "extendedTimeOut": "1000",
-                    "showEasing": "swing",
-                    "hideEasing": "linear",
-                    "showMethod": "fadeIn",
-                    "hideMethod": "fadeOut"
-                };
-                toastr["success"]("URL has been deleted", "Success");
-                this.refresh();
-                this.loadUrls();
-            }).catch(e => {
-                toastr.options = {
-                    "closeButton": false,
-                    "debug": false,
-                    "newestOnTop": false,
-                    "progressBar": true,
-                    "positionClass": "toast-top-right",
-                    "preventDuplicates": false,
-                    "onclick": null,
-                    "showDuration": "300",
-                    "hideDuration": "1000",
-                    "timeOut": "5000",
-                    "extendedTimeOut": "1000",
-                    "showEasing": "swing",
-                    "hideEasing": "linear",
-                    "showMethod": "fadeIn",
-                    "hideMethod": "fadeOut"
-                };
-                toastr["error"](e.data.error, "Error");
-            })
+            const vm = this;
+            swal({
+                title: 'Confirm Deletion',
+                type: 'warning',
+                html: "Are you sure you want to delete the URL <b>" + url + "</b>?<br/><br/><b>NOTE:</b> Deleting URLs can take a long time depending on how many clicks the URL has.<br/><br/>" +
+                "Do not close this page while the deletion is in progress",
+                showCancelButton: true,
+                confirmButtonText: 'Confirm',
+                showLoaderOnConfirm: true,
+                preConfirm: function (email) {
+                    return new Promise(function (resolve, reject) {
+                        vm.$http.post('/url/delete', {url: url}).then(resp => {
+                            resolve();
+                        }).catch(e => {
+                            reject('ERROR: ' + e.data.error);
+                            vm.refreshUrls();
+                        });
+                    })
+                },
+                allowOutsideClick: false
+            }).then(function () {
+                vm.loadUrls();
+                vm.refresh();
+                swal({
+                    type: 'success',
+                    title: 'URL Deleted',
+                    html: 'Your URL was deleted!'
+                })
+            });
         }
     }
 });

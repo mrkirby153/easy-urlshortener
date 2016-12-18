@@ -21,6 +21,7 @@ require('./form/bootstrapper');
 require('./components/main');
 
 window.toastr = require('toastr');
+window.swal = require('sweetalert2');
 
 const app = new Vue({
     el: '#app'
