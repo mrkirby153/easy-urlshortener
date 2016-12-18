@@ -15,7 +15,7 @@ Route::get('/', 'UrlController@index');
 
 Auth::routes();
 
-Route::post('/url/create', 'UrlController@create');
+Route::post('/url/create', 'UrlController@create')->middleware('api');
 Route::get('/url/get', 'UrlController@all');
 Route::post('/url/delete', 'UrlController@delete');
 
