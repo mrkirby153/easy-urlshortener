@@ -18,6 +18,7 @@ Auth::routes();
 Route::post('/url/create', 'UrlController@create')->middleware('api');
 Route::get('/url/get', 'UrlController@all');
 Route::post('/url/delete', 'UrlController@delete');
+Route::post('/url/redirect', 'UrlController@previewClick');
 
 Route::get('/admin', 'AdminController@index');
 Route::get('/admin/status', 'AdminController@status');

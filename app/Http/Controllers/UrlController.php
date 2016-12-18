@@ -87,15 +87,18 @@ class UrlController extends Controller {
         if ($url == null) {
             return response(view('notfound'), 404);
         }
+        if ($preview)
+            return view('preview', compact('url'));
         $click = new Click();
         $click->id = $this->generateId(config('shortener.click_id_size'), $click);
         $click->url = $url->id;
         $click->user_agent = request()->server('HTTP_USER_AGENT');
         $click->save();
-        if (!$preview)
-            return response()->redirectTo($url->long_url);
-        else
-            return view('preview', compact('url'));
+        return response()->redirectTo($url->long_url);
+    }
+
+    public function previewClick(Request $request) {
+        return $this->click($request->id);
     }
 
     private function generateId($size, $model) {
