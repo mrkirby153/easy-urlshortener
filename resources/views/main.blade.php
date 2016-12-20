@@ -28,42 +28,33 @@
                     </div>
                 </div>
             </transition>
-                @if(!Auth::guest())
-                    <div v-if="urls.length > 0">
-                        <h3>Your URLs</h3>
-                        <button class="btn btn-sm btn-default" @click="refreshUrls"><i class="fa fa-refresh" :class="{'fa-spin': loading}" aria-hidden="true"></i></button>
-                        <table class="table table-responsive">
-                            <thead>
-                            <tr>
-                                <th>URL</th>
-                                <th>Shortened URL</th>
-                                <th>Clicks</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <transition name="fade">
-                                <tr v-for="url in urls">
-                                    <td><a :href="url.long_url" target="_blank">@{{url.long_url}}</a></td>
-                                    <td>
-                                        <div class="input-group">
-                                            <input type="text" readonly v-model="url.short_url" class="form-control"/>
-                                            <span class="input-group-btn">
-                                    <button class="btn btn-default" :data-clipboard-text="url.short_url" v-clipboard @click="copyAlert"><i class="fa fa-clone" aria-hidden="true"></i></button>
-                                </span>
-                                        </div>
-                                    </td>
-                                    <td>@{{url.click_count}}</td>
-                                    <td>
-                                        <div class="btn-group">
-                                            <button class="btn btn-danger" @click="deleteUrl(url.id)">Delete</button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            </transition>
-                            </tbody>
-                        </table>
-                        @endif
+            <div v-if="urls.length > 0">
+                <h3>Your URLs</h3>
+                <button class="btn btn-sm btn-default" @click="refreshUrls"><i class="fa fa-refresh" aria-hidden="true"></i></button>
+
+                <div class="row url-container" v-for="url in urls">
+                    <h3>@{{ url.title }}</h3>
+                    <div class="row">
+                        <div class="col-sm-8">
+                            <a :href="url.long_url" target="_blank" :title="url.long_url">@{{url.long_url}}</a>
+                        </div>
+                        <div class="col-sm-4 text-right">
+                            <timeago :since="url.created_at" :auto-update="1" :max-time="259200"></timeago>
+                        </div>
                     </div>
+                    <div class="row m-top-10">
+                        <div class="col-sm-8">
+                            <span class="shortened-url">@{{ url.short_url }}<span class="clicks"><i class="fa fa-bar-chart"></i> @{{ url.click_count }}</span></span>
+
+                        </div>
+                        <div class="col-sm-4 text-right">
+                            <button class="btn btn-default btn-sm" :data-clipboard-text="url.short_url" v-clipboard @click="copyAlert">Copy</button>
+                            <button class="btn btn-danger btn-sm" @click="deleteUrl(url.id)">Delete</button>
+                        </div>
+                    </div>
+                    <hr v-if="urls.length > 1"/>
+                </div>
             </div>
+        </div>
     </url-shortener>
 @endsection

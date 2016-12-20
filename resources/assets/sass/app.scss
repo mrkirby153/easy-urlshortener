@@ -23,3 +23,31 @@
 .dropdown li .fa {
   margin-right: 6px;
 }
+
+.url-container{
+  margin: 10px;
+  -ms-word-wrap: break-word;
+  word-wrap: break-word;
+
+  .shortened-url{
+    display: block;
+    .clicks{
+      margin-left: 30px;
+    }
+    .clicks::after{
+      content: " clicks";
+    }
+  }
+  .m-top-10 {
+    margin-top: 10px;
+  }
+  .created-by::before{
+    content: "Created By ";
+  }
+  .created-by{
+    margin-right: 3px;
+  }
+  .time-ago{
+    display: block;
+  }
+}

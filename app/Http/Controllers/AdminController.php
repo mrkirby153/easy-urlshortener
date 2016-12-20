@@ -32,6 +32,7 @@ class AdminController extends Controller {
             $u->short_url = $request->root() . '/' . $u->id;
             $u->click_count = $u->clicks()->count();
             $u->owner = $u->owner();
+            $u->created_at = $u->created_at." ". config('app.timezone');
             $urls[] = $u;
         }
         return $urls;
