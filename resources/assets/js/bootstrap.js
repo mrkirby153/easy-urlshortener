@@ -34,6 +34,23 @@ Vue.http.interceptors.push((request, next) => {
     next();
 });
 
+const VueTimeago = require('vue-timeago');
+Vue.use(VueTimeago, {
+    locale: 'en-US',
+    maxTime: 259200,
+    locales: {
+        'en-US': [
+            "just now",
+            ["%s second ago", "%s seconds ago"],
+            ["%s minute ago", "%s minutes ago"],
+            ["%s hour ago", "%s hours ago"],
+            ["%s day ago", "%s days ago"],
+            ["%s week ago", "%s weeks ago"],
+            ["%s month ago", "%s months ago"],
+            ["%s year ago", "%s years ago"]
+        ]
+    }
+});
 /**
  * Echo exposes an expressive API for subscribing to channels and listening
  * for events that are broadcast by Laravel. Echo and event broadcasting

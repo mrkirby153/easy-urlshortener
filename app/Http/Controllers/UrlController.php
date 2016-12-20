@@ -70,6 +70,7 @@ class UrlController extends Controller {
         $urls = array();
         foreach ($raw_urls as $u) {
             $u->short_url = $request->root() . '/' . $u->id;
+            $u->created_at = $u->created_at . " ".config('app.timezone');
             $u->click_count = $u->clicks()->count();
             $urls[] = $u;
         }
@@ -140,6 +141,8 @@ class UrlController extends Controller {
         if(strlen($str)>0){
             $str = trim(preg_replace('/\s+/', ' ', $str)); // supports line breaks inside <title>
             preg_match("/\\<title\\>(.*)\\<\\/title\\>/i",$str,$title); // ignore case
+            if(sizeof($title) < 1)
+                return $url;
             return $title[1];
         }
     }
