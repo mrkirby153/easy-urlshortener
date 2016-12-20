@@ -39,6 +39,7 @@ Vue.component('url-shortener', {
             toastr["success"]("URL copied to clipboard", "Success!")
         },
         shortenUrl(){
+            const vm = this;
             this.shortened = '';
             Shortener.post('/url/create', this.forms.create).then(response => {
                 swal({
@@ -48,6 +49,11 @@ Vue.component('url-shortener', {
                 });
                 if (Shortener.user != 'null')
                     this.refreshUrls();
+            }).catch(e => {
+                if (e.status != 422)
+                    vm.forms.create.errors.set({
+                        url: "An unknown error occurred when shortening this URL"
+                    })
             });
         },
         refreshUrls(){
