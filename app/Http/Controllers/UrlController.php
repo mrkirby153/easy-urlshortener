@@ -58,6 +58,7 @@ class UrlController extends Controller {
         }
         $shortenedUrl->long_url = $url;
         $shortenedUrl->owner = (\Auth::guest()) ? -1 : \Auth::id();
+        $shortenedUrl->title = $this->get_title($url);
         $shortenedUrl->save();
         return response()->json(['success' => $request->root() . '/' . $shortenedUrl->id]);
     }
@@ -132,5 +133,14 @@ class UrlController extends Controller {
             return "E:MAX_TRIES_EXCEEDED";
         }
         return $url;
+    }
+
+    private function get_title($url){
+        $str = file_get_contents($url);
+        if(strlen($str)>0){
+            $str = trim(preg_replace('/\s+/', ' ', $str)); // supports line breaks inside <title>
+            preg_match("/\\<title\\>(.*)\\<\\/title\\>/i",$str,$title); // ignore case
+            return $title[1];
+        }
     }
 }
